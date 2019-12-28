@@ -1,13 +1,45 @@
-<html>
-    <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <base href="/" />
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h1>Available feed channels</h1>
+  <p>Following feeds are available in html, json, rss and atom formats</p> 
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
         <form method="POST">
-            <input name="title"/>
-            <input name="description"/>
+            <label for="title">title</label>
+            <input name="title" id="title"/>
+            <label for="link">link</label>
+            <input name="link" id="link"/>
+            <label for="description">description</label>
+            <input name="description" id="description"/>
             <input type="submit" value="Submit">
         </form>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+            {% for channel in channels %}
+            <li>{{ channel.title }}: <a href="/channels/{{ channel.channel_id }}/">{{ channel.description }}</a>{{ channel.link }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+  </div>
+</div>
 
-        {% for channel in channels %}
-        <div><p>{{ channel.title }}: <a href="./channels/{{ channel.channel_id }}">{{ channel.description }}</a></p></div>
-        {% endfor %}
-    </body>
+</body>
 </html>

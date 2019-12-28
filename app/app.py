@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, abort, jsonify
 import json
 from feedgen.feed import FeedGenerator
 
@@ -10,24 +10,73 @@ app = Flask(__name__)
 def index() -> str:
     return 'Hi!'
 
-@app.route('/channels', methods=['POST', 'GET'], defaults={'post_format': 'html'}, strict_slashes=False)
-def channels(post_format) -> str:
+@app.route('/channels/', methods=['POST', 'GET'], defaults={'post_format': 'html', 'channel_id':None}, strict_slashes=False)
+@app.route('/channels/<channel_id>/', methods=['PUT'], defaults={'data_format': 'html'}, strict_slashes=False)
+def channels(post_format, channel_id) -> str:
     if request.method == 'POST':
         if post_format == 'html':
             data = request.form
         else:
-            raise Exception('Only form data or json POST are alowed.')
-
-        insert_channel(data['title'], data['description'], logger=app.logger.info)
+            abort(500)
         
-    return render_template('channels.html', channels=get_channels())
+        validate(data)
 
-def get_feed(entries, feed_fromat='rss'):
+        insert_channel(data['title'], data['link'], data['description'], channel_id=channel_id, logger=app.logger.info)
+        
+        return redirect(request.url)
+    else:
+        return render_template('channels.html', channels=get_channels())
+
+@app.route('/channels/<channel_id>/', methods=['POST', 'GET'], defaults={'data_format': 'html'}, strict_slashes=False)
+@app.route('/channels/<channel_id>/<data_format>', methods=['POST', 'GET'])
+def channel(channel_id, data_format) -> str:
+    if request.method == 'POST':
+        if data_format == 'html':
+            data = request.form
+        elif data_format =='json':
+            data = request.get_json(force=True, silent=True)
+        else:
+            abort(500)
+        
+        validate(data)
+
+        insert_channel_entry(int(channel_id), data['title'], data['link'], data['description'], None, logger=app.logger.info)
+
+        return redirect(request.url)
+    else:
+        channel_info = get_channel(channel_id)
+        channel_entries = get_channel_entries(channel_id)
+
+        if data_format == 'html':
+            return render_template('channel_entries.html', title='', desciption='', entries=channel_entries)
+        elif data_format =='json':
+            return json.dumps(list(channel_entries))
+        elif data_format in ['rss', 'atom']:
+            return get_feed(channel_info, channel_entries, feed_fromat=data_format)
+        else:
+            abort(404)
+
+def validate(data):
+    for k in ['title', 'link', 'description']:
+        if k not in data or not data[k]:
+            raise Exception(k)
+
+def make_error(status_code, sub_code, message, action):
+    response = jsonify({
+        'status': status_code,
+        'sub_code': sub_code,
+        'message': message,
+        'action': action
+    })
+    response.status_code = status_code
+    return response
+
+def get_feed(channel_info, entries, feed_fromat='rss'):
     fg = FeedGenerator()
-    fg.id('id')
-    fg.title('title')
-    fg.link(href='link')
-    fg.description('description')
+    fg.id(channel_info['channel_id'])
+    fg.title(channel_info['title'])
+    fg.link(href=channel_info['link'])
+    fg.description(channel_info['description'])
     for entry in entries:
         fe = fg.add_entry()
         fe.id(str(entry['entry_id']))
@@ -38,31 +87,6 @@ def get_feed(entries, feed_fromat='rss'):
         return fg.rss_str(pretty=True)
     elif feed_fromat == 'atom':
         return fg.atom_str(pretty=True)
-    else:
-        raise Exception()
-
-@app.route('/channels/<channel_id>', methods=['POST', 'GET'], defaults={'response_format': 'html'}, strict_slashes=False)
-@app.route('/channels/<channel_id>/<response_format>', methods=['POST', 'GET'])
-def channel(channel_id, response_format) -> str:
-    app.logger.info(channel_id)
-    if request.method == 'POST':
-        if response_format == 'html':
-            data = request.form
-        elif response_format =='json':
-            data = request.get_json(force=True, silent=True)
-        else:
-            raise Exception('Only form data or json POST are alowed.')
-
-        insert_channel_entry(int(channel_id), data['title'], data['link'], data['description'], None, logger=app.logger.info)
-
-    channel_entries = get_channel_entries(channel_id)
-
-    if response_format == 'html':
-        return render_template('channel_entries.html', title='', desciption='', entries=channel_entries)
-    elif response_format =='json':
-        return json.dumps(list(channel_entries))
-    elif response_format in ['rss', 'atom']:
-        return get_feed(channel_entries, feed_fromat=response_format)
     else:
         raise Exception()
 

@@ -15,11 +15,21 @@ def get_connection():
 def get_channels() -> Iterable[Dict]:
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT id, title, description FROM channels')
-    for channel_id, title, description in cursor:
-        yield {'channel_id':channel_id, 'title':title, 'description':description}
+    cursor.execute('SELECT id, title, link, description FROM channels')
+    for channel_id, title, link, description in cursor:
+        yield {'channel_id':channel_id, 'link':link, 'title':title, 'description':description}
     cursor.close()
     connection.close()
+
+def get_channel(channel_id) -> Iterable[Dict]:
+    connection = get_connection()
+    cursor = connection.cursor(prepared=True)
+    cursor.execute('SELECT title, link, description FROM channels WHERE id=?', (channel_id,))
+    title, link, description = cursor.fetchone()
+    data = {'channel_id':channel_id, 'title':title, 'link':link, 'description':description}
+    cursor.close()
+    connection.close()
+    return data
 
 def get_channel_entries(channel_id, logger=None) -> Iterable[Dict]:
     if logger:
@@ -48,21 +58,33 @@ def get_channel_entries_with_datetime(channel_id) -> Iterable[Dict]:
     cursor.close()
     connection.close()
 
-def insert_channel(title, description, logger=None):
+def insert_channel(title, link, description, channel_id=None, logger=None):
     connection = get_connection()
     cursor = connection.cursor(prepared=True)
-    cursor.execute('INSERT INTO channels (title, description) VALUES (?,?)', (title, description))
-    channel_id = cursor.lastrowid
+    if channel_id == None:
+        cursor.execute('INSERT INTO channels (title, link, description) VALUES (?,?,?)', (title, link, description))
+        channel_id = cursor.lastrowid
+    else:
+        query = 'INSERT INTO channels (id, title, link, description) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE title=?, link=?, description=?'
+        cursor.execute(query, (channel_id, title, link, description, title, link, description))
+
     if logger:
         logger(channel_id)
     connection.commit()
     connection.close()
     return channel_id
 
-def insert_channel_entry(channel_id, title, link, description, datetime=None, logger=None):
+def insert_channel_entry(channel_id, title, link, description, entry_id=None, datetime=None, logger=None):
     connection = get_connection()
     cursor = connection.cursor(prepared=True)
-    cursor.execute('INSERT INTO channel_entries (channel_id, title, link, description) VALUES (?,?,?,?)', (channel_id, title, link, description))
+    if entry_id == None:
+        cursor.execute('INSERT INTO channel_entries (channel_id, title, link, description) VALUES (?,?,?,?)', (channel_id, title, link, description))
+    else:
+        query = '''
+            INSERT INTO channel_entries (id, channel_id, title, link, description) VALUES (?,?,?,?,?)
+            ON DUPLICATE KEY UPDATE channel_id=?, title=?, link=?, description=?'''
+        cursor.execute(query, (entry_id, channel_id, title, link, description, channel_id, title, link, description))
+
     entry_id = cursor.lastrowid
     if logger:
         logger(entry_id)

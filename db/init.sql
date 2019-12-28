@@ -3,17 +3,18 @@ use knights;
 
 CREATE TABLE channels (
   id MEDIUMINT NOT NULL AUTO_INCREMENT,
-  title VARCHAR(48),
+  title VARCHAR(128) NOT NULL,
+  link VARCHAR(256) NOT NULL,
   description VARCHAR(1024),
   PRIMARY KEY (id)
 );
 
 
 INSERT INTO channels
-  (title, description)
+  (title, link, description)
 VALUES
-  ('Lancelot', 'blue'),
-  ('Galahad', 'yellow');
+  ('Lancelot', 'Lancelot', 'blue'),
+  ('Galahad', 'Lancelot', 'yellow');
 
 CREATE TABLE channel_entries (
   id MEDIUMINT NOT NULL AUTO_INCREMENT,

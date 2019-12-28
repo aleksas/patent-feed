@@ -1,12 +1,17 @@
 <html>
     <head>
         <title>{{ title }}</title>
+        <description>{{ description }}</description>
+        <link rel="alternate" type="application/rss+xml" title="Subscribe to What's New" href="./rss" />
     </head>
     <body>
         <form method="POST">
-            <input name="title"/>
-            <input name="description"/>
-            <input name="link"/>
+            <label for="title">title</label>
+            <input name="title" id="title"/>
+            <label for="link">link</label>
+            <input name="link" id="link"/>
+            <label for="description">description</label>
+            <input name="description" id="description"/>
             <input type="submit" value="Submit">
         </form>
 
