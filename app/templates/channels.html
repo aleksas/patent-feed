@@ -1,0 +1,13 @@
+<html>
+    <body>
+        <form method="POST">
+            <input name="title"/>
+            <input name="description"/>
+            <input type="submit" value="Submit">
+        </form>
+
+        {% for channel in channels %}
+        <div><p>{{ channel.title }}: <a href="./channels/{{ channel.channel_id }}">{{ channel.description }}</a></p></div>
+        {% endfor %}
+    </body>
+</html>

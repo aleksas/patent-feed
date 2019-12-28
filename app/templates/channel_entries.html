@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <form method="POST">
+            <input name="title"/>
+            <input name="description"/>
+            <input name="link"/>
+            <input type="submit" value="Submit">
+        </form>
+
+        <h1>{{ title }}</h1>
+        <h2>{{ description }}</h2>
+        {% for entry in entries %}
+        <div><p>{{ entry.entry_id }}: {{ entry.title }}: {{ entry.description }}</p></div>
+        {% endfor %}
+    </body>
+</html>
