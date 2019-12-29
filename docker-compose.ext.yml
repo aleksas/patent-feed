@@ -1,0 +1,66 @@
+version: "2"
+services:
+  app:
+    build: ./app
+    links:
+      - mysql
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app:rw
+      
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+      - ./data/mysql:/var/lib/mysql
+
+  phantomjs:
+    image: binux/pyspider:latest
+    command: phantomjs
+
+  result:
+    image: binux/pyspider:latest
+    links:
+      - mysql
+      - rabbitmq
+    command: result_worker
+
+  processor:
+    image: binux/pyspider:latest
+    links:
+      - mysql
+      - rabbitmq
+    command: processor
+
+  fetcher:
+    image: binux/pyspider:latest
+    links:
+      - rabbitmq
+      - phantomjs
+    command : fetcher
+
+  scheduler:
+    image: binux/pyspider:latest
+    links:
+      - mysql
+      - rabbitmq
+    command: scheduler
+
+  webui:
+    image: binux/pyspider:latest
+    links:
+      - mysql
+      - rabbitmq
+      - scheduler
+      - phantomjs
+    command: webui
+    ports:
+      - "5050:5000"
+
+  rabbitmq:
+    image: rabbitmq:latest
