@@ -19,7 +19,7 @@ def channels(post_format, channel_id) -> str:
         else:
             abort(500)
         
-        validate(data)
+        validate_channel(data)
 
         insert_channel(data['title'], data['link'], data['description'], channel_id=channel_id, logger=app.logger.info)
         
@@ -38,7 +38,7 @@ def channel(channel_id, data_format) -> str:
         else:
             abort(500)
         
-        validate(data)
+        validate_entry(data)
 
         insert_channel_entry(int(channel_id), data['title'], data['link'], data['description'], None, logger=app.logger.info)
 
@@ -56,10 +56,23 @@ def channel(channel_id, data_format) -> str:
         else:
             abort(404)
 
-def validate(data):
+def validate_channel(channel):
+    valid = False
     for k in ['title', 'link', 'description']:
-        if k not in data or not data[k]:
-            raise Exception(k)
+        if k not in channel or not channel[k]:
+            raise Exception('Missing required channel elemeent %s' % k)
+
+def validate_entry(entry, feed_format='rss'):
+    valid = False
+    entry_requirenments = {
+        'rss': ['title', 'description'],
+        'atom': ['id', 'title']
+    }
+    for k in entry_requirenments[feed_format]:
+        if k in entry and entry[k]:
+            valid = True
+    if not valid:
+        raise Exception('At least one of title or description must be present')
 
 def make_error(status_code, sub_code, message, action):
     response = jsonify({

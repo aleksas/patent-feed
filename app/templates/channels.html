@@ -33,7 +33,13 @@
         <div class="col-sm-12">
             <ul>
             {% for channel in channels %}
-            <li>{{ channel.title }}: <a href="/channels/{{ channel.channel_id }}/">{{ channel.description }}</a>{{ channel.link }}</li>
+            <li>
+                <ul>
+                    <li>ID: {{ channel.channel_id }}</li>
+                    <li><a href="/channels/{{ channel.channel_id }}/">Title: {{ channel.title }}</a></li>
+                    <li>Link: {{ channel.link }}</li>
+                    <li>Description: {{ channel.description }}</li>
+                </ul>
             {% endfor %}
             </ul>
         </div>
