@@ -1,6 +1,7 @@
 - [user management example - flask + mysql](https://codeshack.io/login-system-python-flask-mysql/)
+- [flask-login](https://github.com/maxcountryman/flask-login)
 
-
+# Original readme
 
 Code for a creating a docker app with Flask and MySQL tutorial
 
