@@ -2,13 +2,10 @@ FROM python:3.6
 
 EXPOSE 5000
 
-WORKDIR /app
+RUN pip install Flask mysql-connector feedgen
+RUN apt install -y git
+RUN git clone https://github.com/aleksas/patent-feed.git
 
-#COPY requirements.txt /app
-ADD . /app
-RUN pip install -r requirements.txt
+WORKDIR /patent-feed/app
 
-#COPY app.py /app
-#COPY channels.py /app
-#COPY templates /app/templates
 CMD python app.py
