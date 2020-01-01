@@ -1,5 +1,6 @@
 - [user management example - flask + mysql](https://codeshack.io/login-system-python-flask-mysql/)
 - [flask-login](https://github.com/maxcountryman/flask-login)
+- [redis /  seesion / login manager / flask ](https://github.com/hackersandslackers/flasksession-tutorial)
 
 # Original readme
 
