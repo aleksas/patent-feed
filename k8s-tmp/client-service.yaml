@@ -9,5 +9,3 @@ spec:
     targetPort: 5000
   selector:
     app: client
-status:
-  loadBalancer: {}
