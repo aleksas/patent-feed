@@ -1,6 +1,10 @@
-- [user management example - flask + mysql](https://codeshack.io/login-system-python-flask-mysql/)
-- [flask-login](https://github.com/maxcountryman/flask-login)
-- [redis /  seesion / login manager / flask ](https://github.com/hackersandslackers/flasksession-tutorial)
+- [ ] [redis /  seesion / login manager / flask ](https://github.com/hackersandslackers/flasksession-tutorial)
+  - [user management example - flask + mysql](https://codeshack.io/login-system-python-flask-mysql/)
+  - [flask-login](https://github.com/maxcountryman/flask-login)
+
+
+- [x] [Add mysql init script to k8s configmap](https://stackoverflow.com/a/45682775/1433554)
+- [x] [k8s configmap on volume](https://dev.to/joshduffney/kubernetes-using-configmap-subpaths-to-mount-files-3a1i)
 
 # Original readme
 
