@@ -1,19 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    io.kompose.service: mysql
-  name: mysql
+  name: mysql-deployment
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       io.kompose.service: mysql
   template:
     metadata:
-      creationTimestamp: null
       labels:
         io.kompose.service: mysql
     spec:
@@ -25,14 +20,12 @@ spec:
         name: mysql
         ports:
         - containerPort: 3306
-        resources: {}
         volumeMounts:
         - mountPath: /docker-entrypoint-initdb.d/
           name: mysql-claim0
           readOnly: true
         - mountPath: /var/lib/mysql
           name: mysql-claim1
-      restartPolicy: Always
       volumes:
         - name: mysql-claim1
           persistentVolumeClaim:
