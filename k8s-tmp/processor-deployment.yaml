@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: processor
+  template:
+    metadata:
+      labels:
+        io.kompose.service: processor
+    spec:
+      containers:
+      - args:
+        - processor
+        image: binux/pyspider:latest
+        name: processor
+      restartPolicy: Always

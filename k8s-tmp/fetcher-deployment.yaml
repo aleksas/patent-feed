@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fetcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: fetcher
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: fetcher
+    spec:
+      containers:
+      - args:
+        - fetcher
+        image: binux/pyspider:latest
+        name: fetcher
+      restartPolicy: Always

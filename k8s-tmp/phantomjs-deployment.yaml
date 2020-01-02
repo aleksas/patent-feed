@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phantomjs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: phantomjs
+  template:
+    metadata:
+      labels:
+        io.kompose.service: phantomjs
+    spec:
+      containers:
+      - args:
+        - phantomjs
+        image: binux/pyspider:latest
+        name: phantomjs
+      restartPolicy: Always

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: scheduler
+  template:
+    metadata:
+      labels:
+        io.kompose.service: scheduler
+    spec:
+      containers:
+      - args:
+        - scheduler
+        image: binux/pyspider:latest
+        name: scheduler
+      restartPolicy: Always

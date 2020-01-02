@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: webui
+  template:
+    metadata:
+      labels:
+        io.kompose.service: webui
+    spec:
+      containers:
+      - args:
+        - webui
+        image: binux/pyspider:latest
+        name: webui
+        ports:
+        - containerPort: 5000
+      restartPolicy: Always

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: result
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: result
+    spec:
+      containers:
+      - args:
+        - result_worker
+        image: binux/pyspider:latest
+        name: result
+        resources: {}
+      restartPolicy: Always
