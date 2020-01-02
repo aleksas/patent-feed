@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: client-deployment
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      io.kompose.service: app
+      app: client
   template:
     metadata:
       labels:
-        io.kompose.service: app
+        app: client
     spec:
       containers:
       - image: app
         imagePullPolicy: IfNotPresent
-        name: app
+        name: client
         ports:
         - containerPort: 5000

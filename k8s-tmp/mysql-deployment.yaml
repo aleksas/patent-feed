@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: mysql
+      app: mysql
   template:
     metadata:
       labels:
-        io.kompose.service: mysql
+        app: mysql
     spec:
       containers:
       - env:
