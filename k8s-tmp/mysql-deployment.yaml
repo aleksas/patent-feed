@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: /snap/kompose/1/./kompose-linux-amd64 convert
-    kompose.version: 1.18.0 (06a2e56)
-  creationTimestamp: null
   labels:
     io.kompose.service: mysql
   name: mysql
@@ -38,11 +34,54 @@ spec:
           name: mysql-claim1
       restartPolicy: Always
       volumes:
-      - name: mysql-claim0
-        persistentVolumeClaim:
-          claimName: mysql-claim0
-          readOnly: true
-      - name: mysql-claim1
-        persistentVolumeClaim:
-          claimName: mysql-claim1
-status: {}
+        - name: mysql-claim1
+          persistentVolumeClaim:
+            claimName: mysql-claim1    
+        - name: mysql-claim0
+          configMap:
+            name: mysql-initdb-config   
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  initdb.sql: |
+    CREATE DATABASE knights;
+    use knights;
+    
+    CREATE TABLE channels (
+      id MEDIUMINT NOT NULL AUTO_INCREMENT,
+      title VARCHAR(128) NOT NULL,
+      link VARCHAR(256) NOT NULL,
+      description VARCHAR(1024),
+      PRIMARY KEY (id)
+    );
+    
+    
+    INSERT INTO channels
+      (title, link, description)
+    VALUES
+      ('Lancelot', 'Lancelot', 'blue'),
+      ('Galahad', 'Lancelot', 'yellow');
+    
+    CREATE TABLE channel_entries (
+      id MEDIUMINT NOT NULL AUTO_INCREMENT,
+      channel_id INT NOT NULL,
+      title VARCHAR(128) NOT NULL,
+      link VARCHAR(256) NOT NULL,
+      description VARCHAR(1024) NOT NULL,
+      PRIMARY KEY (id)
+    );
+    
+    INSERT INTO channel_entries
+      (channel_id, title, link, description)
+    VALUES
+      (1, 'Galahsad', 'Lancqelot', 'yelloww'),
+      (2, 'Galadhad', 'Lanceloqt', 'yelleow');
+    
+    CREATE TABLE channel_entries_datetimes (
+      id MEDIUMINT NOT NULL,
+      datetime INT,
+      PRIMARY KEY (id)
+    );
