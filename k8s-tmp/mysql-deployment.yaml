@@ -22,15 +22,15 @@ spec:
         - containerPort: 3306
         volumeMounts:
         - mountPath: /docker-entrypoint-initdb.d/
-          name: mysql-claim0
+          name: mysql-config-map-volume
           readOnly: true
         - mountPath: /var/lib/mysql
-          name: mysql-claim1
+          name: mysql-persistent-volume
       volumes:
-        - name: mysql-claim1
+        - name: mysql-persistent-volume
           persistentVolumeClaim:
-            claimName: mysql-claim1    
-        - name: mysql-claim0
+            claimName: mysql-persistent-volume-claim  
+        - name: mysql-config-map-volume
           configMap:
             name: mysql-initdb-config   
 ---

@@ -20,12 +20,3 @@ spec:
         name: app
         ports:
         - containerPort: 5000
-        volumeMounts:
-        - mountPath: /app
-          name: app-claim0
-      restartPolicy: Always
-      volumes:
-      - name: app-claim0
-        persistentVolumeClaim:
-          claimName: app-claim0
-status: {}
