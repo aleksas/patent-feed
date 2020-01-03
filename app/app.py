@@ -31,12 +31,7 @@ def channels(post_format, channel_id) -> str:
 @app.route('/channels/<channel_id>/<data_format>', methods=['POST', 'GET'])
 def channel(channel_id, data_format) -> str:
     if request.method == 'POST':
-        if data_format == 'html':
-            data = request.form
-        elif data_format =='json':
-            data = request.get_json(force=True, silent=True)
-        else:
-            abort(500)
+        data = request.form
         
         validate_entry(data)
 
