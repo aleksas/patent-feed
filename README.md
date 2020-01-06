@@ -6,6 +6,12 @@
 - [x] [Add mysql init script to k8s configmap](https://stackoverflow.com/a/45682775/1433554)
 - [x] [k8s configmap on volume](https://dev.to/joshduffney/kubernetes-using-configmap-subpaths-to-mount-files-3a1i)
 
+# Further development
+- chack swagger for API
+- django
+- Go
+  - GO Gin
+  
 # Original readme
 
 Code for a creating a docker app with Flask and MySQL tutorial
